@@ -1,0 +1,96 @@
+.rlogo-logo-left-top {
+content: "";
+    position: absolute;
+    top: 50px;
+    left:   60px;
+    height: 100px;
+    width: 300px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/Rlogo.png);
+}
+
+.rtidyverse-logo-left-bottom {
+content: "";
+    position: absolute;
+    bottom: 50px;
+    left:   50px;
+    height: 160px;
+    width: 480px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/tidyverse-hex.png);
+}
+
+.rlogo-logo-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/Rlogo.png);
+}
+
+.rtidyverse-logo-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/tidyverse-hex.png);
+}
+
+.dplyr-hex-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/dplyr-hex.png);
+}
+
+.ggplot2-hex-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/ggplot2-hex.png);
+}
+
+.knitr-hex-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/knitr.png);
+}
+
+.xaringan-hex-right-top {
+content: "";
+    position: absolute;
+    top: 40px;
+    right:   0px;
+    height: 80px;
+    width: 240px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(images/xaringan-hex.png);
+}
+

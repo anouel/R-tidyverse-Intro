@@ -1,0 +1,253 @@
+---
+title: 'tidyverse: World Population Solutions'
+author: "Type your name here!"
+date: "`r format(Sys.time(), '%a %d %b %Y (%H:%M:%S)')`"
+output:
+  html_document:
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## World Population Data
+
+We will use a subset of the United Nations world population data[^UNdata]. 
+The subset has 5 yearly population estimates from 1950 until 2015 by age groups for
+both males and females. The variables in the dataset are as follows.
+
+- `continent`: Continent
+- `Location`: Country name
+- `Time`: Year
+- `AgeGrp`: Age group (e.g. 15-19, 20-14)
+- `AgeGrpStart`: initial age of the age group
+- `PopMale`: Total male population (thousands)
+- `PopFemale`: Total female population (thousands)
+
+## Exercise Questions
+
+We want to answer the following questions with data:
+
+1. How did the Portuguese population change between 1950 and 2015?
+2. What was the total world population by sex in 1950 and 2015?
+3. What was the total population by continent and sex in 1950 and 2015?
+4. What was the total population by country and sex in 1950 and 2015?
+5. How did the total population of Portugal change between 1950 and 2015?
+6. Which countries had the highest and lowest proportion of females in 1950 
+and 2015?
+7. Discuss how the proportion of Portuguese females changed between 1950 and 2015?
+
+
+## Read in the data
+
+First we will load the `tidyverse` packages using the `library()` fucntion. Then
+we will read the data from file `World-Population.csv` into object called `unOrig`. 
+
+```{r freadData}
+# Type answer here.
+library(tidyverse)
+library(here)
+unOrig <- read_csv(here("World-Population.csv"))
+
+unOrig
+glimpse(unOrig)
+```
+
+### Pre-processing the Data
+
+Start by preparing the data for analysis in a new object called `un`:
+
+1. Rename `continent` to `Continent`, `Location` to `Country` and `Time` to `Year`. 
+2. Create variable `PopF` as 1000 times `PopFemale`. 
+3. Create variable `PopM` as 1000 times `PopMale`. 
+4. Create variable `PopT` as total of males and females.
+5. Drop variables `PopFemale` and `PopMale`.
+6. Order the data by continent, country, year and age group
+7. Look at the data (by typing `un` and using the `glimpse()` function).
+
+**Important** Use the pipe operator (`%>%`) for all the exercises.
+
+```{r preprocess}
+# Type answer here.
+un <- unOrig %>% 
+  rename(Continent=continent, Country=Location, Year=Time) %>% 
+  mutate(
+    PopF = 1000*PopFemale,
+    PopM = 1000*PopMale,
+    PopT = PopF + PopM) %>% 
+  arrange(Continent, Country, Year, AgeGrp)
+
+un
+```
+
+**Are the age groups correctly ordered?** If not, why not? How can you correct this?
+
+```{r ageGrpArrange}
+un <- unOrig %>% 
+  rename(Continent=continent, Country=Location, Year=Time) %>% 
+  mutate(
+    PopF = 1000*PopFemale,
+    PopM = 1000*PopMale,
+    PopT = PopF + PopM) %>% 
+  arrange(Continent, Country, Year, AgeGrpStart)
+
+un
+```
+
+
+## Exercise Answers
+
+### Portugal: 1950 v 2017
+
+> How did the Portuguese population change between 1950 and 2015?
+
+1. Create a dataset called `popPT`
+2. Filter to select Portugal and the years 1950 and 2015 (hint use `%in% c(...)`)
+3. Arrange this dataset by Year and age group
+
+**What do you notice about the variable `AgeGrp`?**
+
+```{r PT19502017}
+# Type answer here.
+popPT <- un %>% 
+  filter(Country=="Portugal", Year %in% c(1950, 2015)) %>% 
+  arrange(Year, AgeGrpStart)
+
+popPT
+```
+
+### World Population
+
+> What is the total world population by year?
+
+1. Create a new object called `wp` to assign the total world population by year. 
+2. Create `TotF`, `TotM and `Total` as the total for females, males and both.
+3. Arrange by year.
+4. Look at the `wp`.
+
+```{r WorldTotal}
+# Type answer here.
+wp <- un %>% 
+  group_by(Year) %>% 
+  summarise(TotF = sum(PopF), TotM = sum(PopM), Total = sum(PopT)) %>% 
+  arrange(Year)
+```
+
+**Discuss the changes between 1950 and 2015.**
+
+### Population by Continent
+
+> What is the total population by continent and sex in 1950 and 2015?
+
+1. Create a new object called `ct` to assign total population by continent and year. 
+2. Only keep data for 1950 and 2015.
+3. Create `TotF`, `TotM and `Total` as the total for females, males and both.
+4. Arrange the data by Contient and Year
+4. Look at the `ct`.
+
+
+```{r ContinentTotal}
+# Type answer here.
+ct <- un %>% 
+  filter(Year %in% c(1950, 2015)) %>% 
+  group_by(Continent, Year) %>% 
+  summarise(TotF = sum(PopF), TotM = sum(PopM), Total = sum(PopT)) %>% 
+  arrange(Continent, Year)
+
+ct
+```
+
+**What changes do you observe for each continent between 1950 and 2015? Which continent
+has the largest change? Which has the smallest change?**
+
+### Population by Country
+
+> What is the total population by country and sex in 1950 and 2015?
+
+1. Create a new object called `cy` to assign total population by country. 
+2. Only keep data for 1950 and 2015.
+3. Create `TotF`, `TotM and `Total` as the total for females, males and both. Keep 
+the variable `Continent` in the `by` part.
+5. Look at the `cy`.
+
+```{r CountryTotal}
+# Type answer here.
+cy <- un %>% 
+  filter(Year %in% c(1950, 2015)) %>% 
+  group_by(Continent, Country, Year) %>% 
+  summarise(TotF = sum(PopF), TotM = sum(PopM), Total = sum(PopT)) %>% 
+  arrange(Continent, Country, Year)
+
+cy
+```
+
+
+### Portugal: 1950 to 2015
+
+> How did the total population of Portugal change between 1950 and 2015?
+
+1. Select Portugal in the `cy` dataset.
+2. Look at other countries to see what is happening.
+
+```{r PTchange}
+# Type answer here.
+cy %>% filter(Country=="Portugal")
+```
+
+
+### High & Low Female Proportion
+
+> Which countries had the highest and lowest proportion of females in 1950 
+and 2015?
+
+1. Start with dataset `cy` to create a new dataset called `pp`.
+2. Calculate two new variables called `PropF` and `PropM` for the proportion of females and males, respectively.
+3. Order `PropF` from the lowest to the highest and select the first 10 observations
+for both 1950 and 2015.
+4. Order `PropF` from the highest to lowest and select the first 10 observations
+for both 1950 and 2015.
+
+
+
+```{r proportion}
+# Type answer here.
+pp <- cy %>% 
+  mutate(
+    PropF = TotF/Total,
+    PropM = TotM/Total
+  ) %>% 
+  group_by(Year) %>% 
+  arrange(Year, PropF)
+
+# Top 10 (lowest) for each year
+pp %>% top_n(n=10)
+
+# Last 10 (highest) for each year
+pp %>% top_n(n=-10)
+```
+
+
+### Portuguese Females Over Time
+
+> Discuss how the proportion of Portuguese females changed between 1950 and 2015?
+
+1. Select Portugal from the `pp` dataset.
+
+```{r ptChanges}
+# Type answer here.
+pp %>%  filter(Country=="Portugal")
+
+```
+
+[^UNdata]: Source: https://population.un.org/wpp/Download/Standard/CSV/
+[Dataset: "WPP2017_PopulationByAgeSex_Medium.csv](https://population.un.org/wpp/DVD/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2017_TotalPopulationBySex.csv)
